@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Code, LayoutGrid, Instagram, Mail } from "lucide-react";
+import { TierOneSponsorLogo } from "./sponsor-logos";
 
 export function Footer() {
     return (
@@ -119,6 +120,16 @@ export function Footer() {
                         <p className="text-xs text-slate-500 mt-4">
                             Politeknik Sawunggalih Aji (POLSA) Kutoarjo
                         </p>
+                    </div>
+                </div>
+
+                {/* Main Sponsor in Footer */}
+                <div className="border-t border-black/5 dark:border-white/5 pt-8 pb-6 flex flex-col items-center gap-3">
+                    <span className="text-[10px] text-slate-500 uppercase tracking-widest">
+                        Presented by
+                    </span>
+                    <div className="opacity-70 hover:opacity-100 transition-opacity">
+                        <TierOneSponsorLogo variant="footer" />
                     </div>
                 </div>
 

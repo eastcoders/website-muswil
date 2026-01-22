@@ -5,6 +5,7 @@ import { LayoutGrid, Menu, X } from "lucide-react";
 import Image from "next/image";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { useState } from "react";
+import { TierOneSponsorLogo } from "./sponsor-logos";
 
 export function Navbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -12,19 +13,27 @@ export function Navbar() {
     return (
         <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-zinc-950/80 backdrop-blur-md transition-all duration-300">
             <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-                {/* Logo */}
-                <Link className="flex items-center gap-2 group" href="#">
-                    <div className="relative h-10 w-auto aspect-[3/1]">
-                        <Image
-                            src="/image/logo/muswil.png"
-                            alt="MUSWIL VI Logo"
-                            fill
-                            className="object-contain"
-                            priority
-                            sizes="120px"
-                        />
+                {/* Logo + Tier 1 Sponsor */}
+                <div className="flex items-center gap-4">
+                    <Link className="flex items-center gap-2 group" href="#">
+                        <div className="relative h-10 w-auto aspect-[3/1]">
+                            <Image
+                                src="/image/logo/muswil.png"
+                                alt="MUSWIL VI Logo"
+                                fill
+                                className="object-contain"
+                                priority
+                                sizes="120px"
+                            />
+                        </div>
+                    </Link>
+
+                    {/* Tier 1 Sponsor in Navbar - Desktop Only */}
+                    <div className="hidden lg:flex items-center gap-3 pl-4 border-l border-white/10">
+                        <span className="text-[9px] text-slate-500 uppercase tracking-wider">Presented by</span>
+                        <TierOneSponsorLogo variant="navbar" />
                     </div>
-                </Link>
+                </div>
                 {/* Desktop Links */}
                 <div className="hidden md:flex items-center gap-8">
                     <Link

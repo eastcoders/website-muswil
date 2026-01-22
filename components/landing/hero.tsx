@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, Calendar, MapPin } from "lucide-react";
 import Image from "next/image";
+import { TierOneSponsorLogo } from "./sponsor-logos";
 
 export function Hero() {
     return (
@@ -86,15 +87,19 @@ export function Hero() {
                 Registration closes on <span className="text-red-500 font-bold">January 18, 2026</span>
             </p>
 
-            {/* Tier 1 Sponsor Slot - Infrastructure */}
-            <div className="flex flex-col items-center gap-2 animate-fade-in-up delay-500 mt-12 mb-4">
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
-                    Infrastructure powered by
+            {/* Tier 1 Sponsor - Main Sponsor (Premium Display) */}
+            <div className="flex flex-col items-center gap-3 animate-fade-in-up delay-500 mt-12 mb-4">
+                <span className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em]">
+                    Main Sponsor
                 </span>
-                <div className="glass-card px-5 py-2 rounded-full border border-blue-500/30 bg-blue-500/5 shadow-[0_0_15px_rgba(59,130,246,0.1)] hover:shadow-[0_0_20px_rgba(59,130,246,0.2)] transition-shadow cursor-default cursor-pointer group">
-                    <span className="text-sm font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300 group-hover:from-blue-300 group-hover:to-cyan-200 transition-all flex items-center gap-2">
-                        ⚡ SUPERCLOUD
-                    </span>
+                <div className="relative group">
+                    {/* Glow Effect Background */}
+                    <div className="absolute -inset-4 bg-gradient-to-r from-blue-500/20 via-cyan-500/20 to-blue-500/20 rounded-3xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+                    {/* Main Card */}
+                    <div className="relative glass-card px-8 py-5 rounded-2xl border-2 border-blue-500/30 bg-gradient-to-br from-blue-500/5 to-cyan-500/5 dark:from-blue-500/10 dark:to-cyan-500/10 shadow-[0_0_30px_rgba(59,130,246,0.15)] hover:shadow-[0_0_40px_rgba(59,130,246,0.25)] transition-all duration-300 cursor-default">
+                        <TierOneSponsorLogo variant="hero" />
+                    </div>
                 </div>
             </div>
 
