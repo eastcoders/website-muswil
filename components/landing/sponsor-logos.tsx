@@ -1,4 +1,5 @@
-import { mainSponsor, platinumSponsors, supportingSponsors, type Sponsor } from "@/lib/sponsor-data";
+import Image from "next/image";
+import { mainSponsor, goldSponsors, supportingSponsors, mediaPartners, type Sponsor } from "@/lib/sponsor-data";
 
 interface SponsorLogoProps {
     sponsor: Sponsor;
@@ -10,14 +11,24 @@ interface SponsorLogoProps {
 export function SponsorLogo({ sponsor, className = "", showLabel = true }: SponsorLogoProps) {
     return (
         <div className={`flex items-center gap-2 ${className}`}>
-            <div
-                className="flex items-center justify-center rounded-lg font-black"
-                style={{
-                    background: `linear-gradient(135deg, ${sponsor.gradientFrom}, ${sponsor.gradientTo})`,
-                }}
-            >
-                <span className="text-white">{sponsor.icon}</span>
-            </div>
+            {sponsor.logoPath ? (
+                <Image
+                    src={sponsor.logoPath}
+                    alt={sponsor.name}
+                    width={40}
+                    height={40}
+                    className="object-contain"
+                />
+            ) : (
+                <div
+                    className="flex items-center justify-center rounded-lg font-black w-10 h-10"
+                    style={{
+                        background: `linear-gradient(135deg, ${sponsor.gradientFrom}, ${sponsor.gradientTo})`,
+                    }}
+                >
+                    <span className="text-white">{sponsor.icon}</span>
+                </div>
+            )}
             {showLabel && (
                 <span
                     className="font-bold bg-clip-text text-transparent"
@@ -32,7 +43,7 @@ export function SponsorLogo({ sponsor, className = "", showLabel = true }: Spons
     );
 }
 
-// Tier 1 - Main Sponsor Logo (Extra Large, Premium Styling)
+// Tier 1 - Main Sponsor Logo (Extra Large, Premium Styling, Clickable)
 interface TierOneSponsorLogoProps {
     className?: string;
     variant?: "navbar" | "hero" | "footer";
@@ -47,86 +58,88 @@ export function TierOneSponsorLogo({ className = "", variant = "hero" }: TierOne
         footer: "h-10",
     };
 
-    const iconSizeClasses = {
-        navbar: "w-7 h-7 text-base",
-        hero: "w-12 h-12 md:w-14 md:h-14 text-2xl md:text-3xl",
-        footer: "w-8 h-8 text-lg",
+    const logoSizes = {
+        navbar: { width: 100, height: 32 },
+        hero: { width: 200, height: 80 },
+        footer: { width: 100, height: 40 },
     };
 
-    const textSizeClasses = {
-        navbar: "text-sm",
-        hero: "text-2xl md:text-3xl",
-        footer: "text-base",
-    };
-
-    return (
-        <div className={`flex items-center gap-3 ${sizeClasses[variant]} ${className}`}>
-            <div
-                className={`flex items-center justify-center rounded-xl shadow-lg ${iconSizeClasses[variant]}`}
-                style={{
-                    background: `linear-gradient(135deg, ${sponsor.gradientFrom}, ${sponsor.gradientTo})`,
-                    boxShadow: `0 0 20px ${sponsor.gradientFrom}40`,
-                }}
-            >
-                <span className="text-white drop-shadow-md">{sponsor.icon}</span>
-            </div>
-            <span
-                className={`font-black tracking-tight ${textSizeClasses[variant]} bg-clip-text text-transparent`}
-                style={{
-                    backgroundImage: `linear-gradient(135deg, ${sponsor.gradientFrom}, ${sponsor.gradientTo})`,
-                }}
-            >
-                {sponsor.shortName}
-            </span>
+    const content = (
+        <div className={`flex items-center justify-center ${sizeClasses[variant]} ${className}`}>
+            <Image
+                src={sponsor.logoPath}
+                alt={sponsor.name}
+                width={logoSizes[variant].width}
+                height={logoSizes[variant].height}
+                className="object-contain h-full w-auto"
+                priority={variant === "hero"}
+            />
         </div>
     );
+
+    // Wrap with link if URL exists
+    if (sponsor.instagramUrl) {
+        return (
+            <a
+                href={sponsor.instagramUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group transition-transform hover:scale-105"
+                title={`Kunjungi ${sponsor.name}`}
+            >
+                {content}
+            </a>
+        );
+    }
+
+    return content;
 }
 
-// Tier 2 - Platinum Sponsor Card (Large, with hover effects)
+// Tier 2 - Gold Sponsor Card (Premium styling with slate background)
 interface TierTwoSponsorCardProps {
     sponsor: Sponsor;
     className?: string;
 }
 
 export function TierTwoSponsorCard({ sponsor, className = "" }: TierTwoSponsorCardProps) {
+    // If no logo, show premium placeholder with dashed border
+    if (!sponsor.logoPath) {
+        return (
+            <div
+                className={`group relative h-20 md:h-24 flex items-center justify-center px-8 transition-all duration-300 ${className}`}
+            >
+                <div className="flex flex-col items-center justify-center gap-2 text-center grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-300">
+                    <div
+                        className="w-8 h-8 rounded-lg flex items-center justify-center"
+                        style={{
+                            background: `linear-gradient(135deg, ${sponsor.gradientFrom}40, ${sponsor.gradientTo}40)`,
+                            border: `1px solid ${sponsor.gradientFrom}30`
+                        }}
+                    >
+                        <span className="text-sm text-slate-400">{sponsor.icon || "◆"}</span>
+                    </div>
+                    <span className="font-medium text-slate-500 dark:text-slate-400 text-xs md:text-sm tracking-wide">
+                        {sponsor.name}
+                    </span>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div
-            className={`group relative h-28 md:h-32 rounded-2xl bg-white dark:bg-zinc-900 border border-slate-200 dark:border-white/10 flex items-center justify-center p-6 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden ${className}`}
+            className={`group relative h-20 md:h-24 flex items-center justify-center px-8 transition-all duration-300 ${className}`}
         >
-            {/* Gradient Background on Hover */}
-            <div
-                className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-300"
-                style={{
-                    background: `linear-gradient(135deg, ${sponsor.gradientFrom}, ${sponsor.gradientTo})`,
-                }}
-            />
-
-            {/* Logo Content */}
-            <div className="flex items-center gap-4 relative z-10">
-                <div
-                    className="w-14 h-14 md:w-16 md:h-16 flex items-center justify-center rounded-xl text-2xl md:text-3xl shadow-lg group-hover:scale-110 transition-transform duration-300"
-                    style={{
-                        background: `linear-gradient(135deg, ${sponsor.gradientFrom}, ${sponsor.gradientTo})`,
-                        boxShadow: `0 4px 20px ${sponsor.gradientFrom}30`,
-                    }}
-                >
-                    <span className="text-white drop-shadow">{sponsor.icon}</span>
-                </div>
-                <span
-                    className="font-bold text-lg md:text-xl bg-clip-text text-transparent"
-                    style={{
-                        backgroundImage: `linear-gradient(135deg, ${sponsor.gradientFrom}, ${sponsor.gradientTo})`,
-                    }}
-                >
-                    {sponsor.shortName}
-                </span>
+            {/* Logo Content - Grayscale by default, color on hover */}
+            <div className="relative z-10 flex items-center justify-center w-full h-full">
+                <Image
+                    src={sponsor.logoPath}
+                    alt={sponsor.name}
+                    width={140}
+                    height={80}
+                    className={`object-contain max-h-12 md:max-h-16 w-auto grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300 ${sponsor.imageClassName || ""}`}
+                />
             </div>
-
-            {/* Corner Accent */}
-            <div
-                className="absolute top-3 right-3 w-2 h-2 rounded-full opacity-50 group-hover:opacity-100 transition-opacity"
-                style={{ backgroundColor: sponsor.gradientFrom }}
-            />
         </div>
     );
 }
@@ -140,35 +153,74 @@ interface TierThreeSponsorCardProps {
 export function TierThreeSponsorCard({ sponsor, className = "" }: TierThreeSponsorCardProps) {
     return (
         <div
-            className={`h-16 md:h-20 rounded-xl border border-slate-200 dark:border-white/10 flex items-center justify-center gap-3 p-4 bg-slate-50 dark:bg-white/5 opacity-70 hover:opacity-100 hover:border-slate-400 dark:hover:border-white/20 transition-all cursor-default ${className}`}
+            className={`h-16 md:h-20 rounded-xl border border-slate-300 dark:border-slate-400/50 flex items-center justify-center gap-3 p-4 bg-slate-100 dark:bg-slate-200 opacity-80 hover:opacity-100 hover:shadow-md transition-all cursor-default ${className}`}
         >
-            <div
-                className="w-8 h-8 md:w-10 md:h-10 flex items-center justify-center rounded-lg text-sm md:text-base"
-                style={{
-                    background: `linear-gradient(135deg, ${sponsor.gradientFrom}, ${sponsor.gradientTo})`,
-                }}
-            >
-                <span className="text-white">{sponsor.icon}</span>
-            </div>
-            <span className="font-semibold text-xs md:text-sm text-slate-600 dark:text-slate-400 uppercase tracking-tight">
-                {sponsor.shortName}
-            </span>
+            <Image
+                src={sponsor.logoPath}
+                alt={sponsor.name}
+                width={80}
+                height={40}
+                className="object-contain max-h-12 w-auto"
+            />
         </div>
     );
 }
 
-// Pre-built Grid Components
-export function PlatinumSponsorsGrid() {
+// Media Partner Card
+interface MediaPartnerCardProps {
+    sponsor: Sponsor;
+    className?: string;
+}
+
+export function MediaPartnerCard({ sponsor, className = "" }: MediaPartnerCardProps) {
     return (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {platinumSponsors.map((sponsor) => (
-                <TierTwoSponsorCard key={sponsor.id} sponsor={sponsor} />
-            ))}
+        <div
+            className={`h-20 md:h-24 rounded-xl border border-slate-300 dark:border-slate-400/50 flex items-center justify-center p-5 bg-slate-100 dark:bg-slate-200 shadow-md hover:shadow-lg hover:scale-[1.02] transition-all duration-300 ${className}`}
+        >
+            <Image
+                src={sponsor.logoPath}
+                alt={sponsor.name}
+                width={120}
+                height={60}
+                className="object-contain max-h-14 w-auto"
+            />
         </div>
     );
+}
+
+// Pre-built Marquee Component for Gold Sponsors
+export function GoldSponsorsMarquee() {
+    if (goldSponsors.length === 0) return null;
+
+    // Duplicate sponsors for seamless infinite scroll
+    const duplicatedSponsors = [...goldSponsors, ...goldSponsors, ...goldSponsors];
+
+    return (
+        <div className="relative w-full overflow-hidden">
+            {/* Gradient fade edges */}
+            <div className="absolute left-0 top-0 bottom-0 w-20 md:w-32 bg-gradient-to-r from-slate-50 dark:from-zinc-950/50 to-transparent z-10 pointer-events-none"></div>
+            <div className="absolute right-0 top-0 bottom-0 w-20 md:w-32 bg-gradient-to-l from-slate-50 dark:from-zinc-950/50 to-transparent z-10 pointer-events-none"></div>
+
+            {/* Marquee container */}
+            <div className="flex animate-marquee hover:pause-animation">
+                {duplicatedSponsors.map((sponsor, index) => (
+                    <div key={`${sponsor.id}-${index}`} className="flex-shrink-0">
+                        <TierTwoSponsorCard sponsor={sponsor} />
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+}
+
+// Legacy Grid export (renamed)
+export function GoldSponsorsGrid() {
+    return <GoldSponsorsMarquee />;
 }
 
 export function SupportingSponsorsGrid() {
+    if (supportingSponsors.length === 0) return null;
+
     return (
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
             {supportingSponsors.map((sponsor) => (
@@ -177,3 +229,18 @@ export function SupportingSponsorsGrid() {
         </div>
     );
 }
+
+export function MediaPartnersGrid() {
+    if (mediaPartners.length === 0) return null;
+
+    return (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {mediaPartners.map((sponsor) => (
+                <MediaPartnerCard key={sponsor.id} sponsor={sponsor} />
+            ))}
+        </div>
+    );
+}
+
+// Legacy export for backwards compatibility
+export const PlatinumSponsorsGrid = GoldSponsorsGrid;
